@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { SampleDataBadge } from '@/components/ui/SampleDataBadge';
+import { isMockMode } from '@/lib/dataSource';
 import { useToast } from '@/components/ui/Toast';
 import {
   Search,
@@ -222,7 +224,10 @@ export default function IncidentsPage() {
             <span className="text-xs font-medium text-text-muted">
               Open incidents
             </span>
-            <Radio className="w-4 h-4 text-danger" />
+            <div className="flex items-center gap-1.5">
+              {isMockMode && <SampleDataBadge />}
+              <Radio className="w-4 h-4 text-danger" />
+            </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-semibold font-mono text-text">
@@ -231,7 +236,13 @@ export default function IncidentsPage() {
             <span className="text-xs text-text-muted">active in triage</span>
           </div>
           <p className="text-xs text-text-muted mt-1.5 flex items-center gap-1">
-            <span className="text-emerald-600 font-medium font-mono">↓ 2</span> vs yesterday
+            {isMockMode ? (
+              <span className="text-text-muted font-mono">sample value</span>
+            ) : (
+              <>
+                <span className="text-emerald-600 font-medium font-mono">↓ 2</span> vs yesterday
+              </>
+            )}
           </p>
         </Card>
 
@@ -240,7 +251,10 @@ export default function IncidentsPage() {
             <span className="text-xs font-medium text-text-muted">
               Median time to resolve
             </span>
-            <Clock className="w-4 h-4 text-primary" />
+            <div className="flex items-center gap-1.5">
+              {isMockMode && <SampleDataBadge />}
+              <Clock className="w-4 h-4 text-primary" />
+            </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-semibold font-mono text-text">
@@ -249,7 +263,13 @@ export default function IncidentsPage() {
             <span className="text-xs text-text-muted">p50 MTTR</span>
           </div>
           <p className="text-xs text-text-muted mt-1.5 flex items-center gap-1">
-            <span className="text-emerald-600 font-medium font-mono">↓ 34%</span> with memory triage
+            {isMockMode ? (
+              <span className="text-text-muted font-mono">sample value</span>
+            ) : (
+              <>
+                <span className="text-emerald-600 font-medium font-mono">↓ 34%</span> with memory triage
+              </>
+            )}
           </p>
         </Card>
 
@@ -258,16 +278,27 @@ export default function IncidentsPage() {
             <span className="text-xs font-medium text-text-muted">
               Suggestions accepted
             </span>
-            <TrendingUp className="w-4 h-4 text-memory" />
+            <div className="flex items-center gap-1.5">
+              {isMockMode && <SampleDataBadge />}
+              <TrendingUp className="w-4 h-4 text-memory" />
+            </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-semibold font-mono text-text">
               88.4%
             </span>
-            <span className="text-xs text-text-muted">on-call adoption</span>
+            <span className="text-xs text-text-muted">
+              {isMockMode ? 'sample rate' : 'on-call adoption'}
+            </span>
           </div>
           <p className="text-xs text-text-muted mt-1.5 flex items-center gap-1">
-            <span className="text-emerald-600 font-medium font-mono">↑ 6.1%</span> this sprint
+            {isMockMode ? (
+              <span className="text-text-muted font-mono">sample value</span>
+            ) : (
+              <>
+                <span className="text-emerald-600 font-medium font-mono">↑ 6.1%</span> this sprint
+              </>
+            )}
           </p>
         </Card>
       </div>

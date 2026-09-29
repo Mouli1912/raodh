@@ -1,4 +1,10 @@
 .env
+.env*
+*.env
+*.env.local
+.env.local
+.env.production
+.env.development
 __pycache__/
 node_modules/
 .next/

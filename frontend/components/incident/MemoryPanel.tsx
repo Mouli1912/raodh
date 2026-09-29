@@ -82,7 +82,7 @@ export const MemoryPanel: React.FC<MemoryPanelProps> = ({
               key={precedent.id}
               id={`precedent-${precedent.id}`}
               className={clsx(
-                'p-5 transition-all duration-300 relative',
+                'p-5 transition-all duration-300 relative scroll-mt-32',
                 isHighlighted
                   ? 'bg-violet-100/80 ring-2 ring-memory/60'
                   : 'hover:bg-violet-50/70',

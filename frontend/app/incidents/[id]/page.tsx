@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, use } from 'react';
 import Link from 'next/link';
+import clsx from 'clsx';
 import {
   Incident,
   TriageResult,
@@ -353,7 +354,7 @@ export default function IncidentViewPage({
   return (
     <div className="space-y-6 pb-12">
       {/* 1. Sticky Header Bar */}
-      <div className="sticky top-14 z-30 -mx-6 px-6 py-3.5 bg-surface/95 backdrop-blur-xs border-b border-border shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="sticky top-14 z-40 -mx-6 px-6 py-3.5 bg-white border-b border-border shadow-xs flex flex-wrap items-center justify-between gap-4">
         {/* Left: Nav back + Incident Identity */}
         <div className="flex items-center gap-3 flex-wrap">
           <Link
@@ -503,7 +504,7 @@ export default function IncidentViewPage({
           {/* Triage Stepper while running */}
           {isTriaging && (
             <div className="animate-fadeIn">
-              <TriageStepper />
+              <TriageStepper memoryEnabled={memoryEnabled} />
             </div>
           )}
 
@@ -526,9 +527,14 @@ export default function IncidentViewPage({
             </div>
           )}
 
-          {/* Hypotheses List */}
-          {triageResult && !isTriaging && (
-            <div className="space-y-5 transition-opacity duration-150">
+          {/* Hypotheses List with subtle transition overlay during re-triage to prevent layout jump */}
+          {triageResult && (
+            <div
+              className={clsx(
+                'space-y-5 transition-opacity duration-150 motion-reduce:transition-none',
+                isTriaging && 'opacity-40 pointer-events-none'
+              )}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-text uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-primary" />

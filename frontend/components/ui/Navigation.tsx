@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { BrainCircuit, Menu, X, Cpu } from 'lucide-react';
+import { BrainCircuit, Menu, X, Cpu, MonitorPlay } from 'lucide-react';
 import { IS_MOCK_MODE } from '@/lib/api';
 
 const navItems = [
@@ -17,6 +17,37 @@ const navItems = [
 export const Navigation: React.FC = () => {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDemoView, setIsDemoView] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      if (e.key === 'd' || e.key === 'D') {
+        setIsDemoView((prev) => {
+          const next = !prev;
+          if (next) {
+            document.body.setAttribute('data-demo', 'true');
+          } else {
+            document.body.removeAttribute('data-demo');
+          }
+          return next;
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -26,7 +57,7 @@ export const Navigation: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-surface border-b border-border h-14 no-print">
+    <header className="sticky top-0 z-50 bg-white border-b border-border h-14 no-print shadow-xs">
       <div className="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between">
         {/* Left: Brand logo */}
         <div className="flex items-center gap-6">
@@ -72,11 +103,21 @@ export const Navigation: React.FC = () => {
           </nav>
         </div>
 
-        {/* Right: Team chip & Avatar */}
+        {/* Right: Team chip, Demo view badge, & Avatar */}
         <div className="flex items-center gap-3">
+          {isDemoView && (
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-primary-soft text-primary border border-primary/30 animate-fadeIn"
+              title="Demo View active (press 'd' to toggle standard size)"
+            >
+              <MonitorPlay className="w-3.5 h-3.5" />
+              Demo view (16px)
+            </span>
+          )}
+
           {IS_MOCK_MODE && (
             <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono bg-violet-50 text-violet-700 border border-violet-200">
-              <Cpu className="w-3 3" />
+              <Cpu className="w-3 h-3" />
               Demo Mode
             </span>
           )}
@@ -106,7 +147,7 @@ export const Navigation: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="md:hidden border-b border-border bg-surface px-6 py-3 shadow-lg flex flex-col gap-1">
+        <div className="md:hidden border-b border-border bg-white px-6 py-3 shadow-lg flex flex-col gap-1">
           {navItems.map((item) => {
             const active = isActive(item.href);
             return (

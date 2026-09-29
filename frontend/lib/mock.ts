@@ -10,6 +10,9 @@ import {
   AskReflectResponse,
 } from './types';
 
+export const STEP_DURATION_MS = 450;
+export const MOCK_LATENCY_MS = 300;
+
 export const MOCK_INCIDENTS: Incident[] = [
   {
     id: 'INC-031',

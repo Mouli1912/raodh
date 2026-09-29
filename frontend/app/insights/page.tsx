@@ -8,6 +8,8 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { SampleDataBadge } from '@/components/ui/SampleDataBadge';
+import { isMockMode } from '@/lib/dataSource';
 import { useToast } from '@/components/ui/Toast';
 import {
   BrainCircuit,
@@ -71,9 +73,12 @@ export default function InsightsPage() {
     <div className="space-y-8 pb-12">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-text tracking-tight">
-          Weekly Reliability Brief & Memory Recall
-        </h1>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <h1 className="text-2xl font-semibold text-text tracking-tight">
+            Weekly Reliability Brief & Memory Recall
+          </h1>
+          {isMockMode && <SampleDataBadge />}
+        </div>
         <p className="text-text-muted text-sm mt-1">
           {brief?.week_label || 'Weekly synthesis'} · Aggregated patterns, repeat vulnerabilities, and interactive institutional knowledge lookup.
         </p>

@@ -40,6 +40,34 @@ Precedent strictly adheres to an editorial, light-only design language with calm
 
 ---
 
+## Data Sources & Modes
+
+### Mock Mode (`NEXT_PUBLIC_USE_MOCK=true`)
+When running in mock mode:
+- **Sample Data Badges**: Every invented number and illustrative curve displays a `Sample data` pill badge with an explanatory tooltip (*"Illustrative values from mock mode, not measured results"*).
+- **Screens with Sample Data**:
+  - **Incidents Dashboard (`/`)**: Stat cards show illustrative counts and neutral labels (`sample value`, `sample rate`).
+  - **Hero Incident (`/incidents/INC-031`)**: Illustrative HikariCP pool starvation outage with grounded citations (`INC-001`, `INC-014`).
+  - **Insights (`/insights`)**: Sample reliability brief and simulated reflect responses.
+  - **Replay (`/replay`)**: Illustrative sequential learning curve.
+- **Fast Testing (`?fast=1`)**: Append `?fast=1` to any incident URL (e.g. `/incidents/INC-031?fast=1`) to shorten the stepper stage duration from 450ms to 150ms during development and testing.
+
+### Real Mode (`NEXT_PUBLIC_USE_MOCK=false`)
+When connected to a live backend:
+- Replay reads actual empirical measurements from `GET /v1/eval/results`.
+- If no evaluations have been generated yet, `/replay` renders an empty state: *"No replay results yet. Run `make replay` to generate them."* without falling back to synthetic mock data.
+- Live SSE / polling telemetry updates stream into the incident timeline and triage panel.
+
+---
+
+## Demo View Mode
+
+- Press **`d`** on any page (when not focusing a text input) to toggle **Demo View**.
+- Increases base font size to 16px and adds card padding for high-legibility screen recordings.
+- Displays a `Demo view (16px)` chip in the app bar when active.
+
+---
+
 ## Component Architecture
 
 ```
@@ -59,7 +87,8 @@ frontend/
 │   │   ├── Button.tsx          # Primary, secondary, ghost, danger (sm, md)
 │   │   ├── Badge.tsx           # Neutral, success, warning, danger, info, memory
 │   │   ├── Card.tsx            # Standard card with optional headers and footers
-│   │   ├── Navigation.tsx      # Top 56px app bar with responsive drawer
+│   │   ├── Navigation.tsx      # Top 56px app bar with responsive drawer & 'd' shortcut
+│   │   ├── SampleDataBadge.tsx # Small neutral pill badge with tooltip for mock mode
 │   │   ├── Skeleton.tsx        # Pulsing placeholders for asynchronous state
 │   │   ├── EmptyState.tsx      # Standard empty illustration and copy
 │   │   ├── Tooltip.tsx         # Accessible hover/focus tooltips
@@ -67,34 +96,20 @@ frontend/
 │   │   └── Toast.tsx           # Bottom-right auto-dismissing notification system
 │   └── incident/
 │       ├── MemoryToggle.tsx    # Accessible ON/OFF memory toggle switch
-│       ├── TriageStepper.tsx   # 4-stage live triage progress stepper
+│       ├── TriageStepper.tsx   # 4-stage live triage progress stepper with ?fast=1 support
 │       ├── HypothesisCard.tsx  # Ranked hypotheses with citations & feedback buttons
 │       ├── AvoidList.tsx       # "Do not repeat" anti-pattern avoidance cards
-│       ├── MemoryPanel.tsx     # Full memory audit with dispute popover
+│       ├── MemoryPanel.tsx     # Full memory audit with dispute popover & scroll-mt
 │       ├── Timeline.tsx        # Color-coded event connector timeline
 │       ├── RedactedLogs.tsx    # Collapsible redacted log stream
 │       ├── ResolveDrawer.tsx   # Incident resolution slide-over drawer
 │       └── CompareModal.tsx    # Side-by-side Memory ON vs OFF comparison modal
 └── lib/
+    ├── dataSource.ts           # isMockMode configuration
     ├── types.ts                # Strict TypeScript domain model
-    ├── mock.ts                 # Hero incident (INC-031), precedents, replays
-    └── api.ts                  # Typed client with mock mode and SSE support
+    ├── mock.ts                 # Hero incident (INC-031), precedents, replays & timing constants
+    └── api.ts                  # Typed client with eval endpoint & fallback
 ```
-
----
-
-## Demo Mode (`NEXT_PUBLIC_USE_MOCK`)
-
-The application supports standalone demo mode out of the box with zero external backend dependencies.
-
-- Set `NEXT_PUBLIC_USE_MOCK=true` in `.env.local` (or leave unset, as it defaults to mock mode when `NEXT_PUBLIC_API_URL` is omitted).
-- Mock latency is calibrated to 400ms–800ms to allow realistic loading skeletons and triage steppers to render smoothly.
-- The hero incident **INC-031** (`checkout p99 latency > 2s`) demonstrates:
-  1. **Memory ON**: Grounded diagnosis of HikariCP pool starvation citing `INC-001` and `INC-014`, verified steps, and anti-pattern warnings.
-  2. **Memory OFF**: Uncited, generic guidance proposing pod restarts.
-  3. **Compare Modal**: Side-by-side verification of triage precision.
-  4. **Feedback & Avoid Updates**: Marking a step as failed instantly injects it into the Avoid List and incident timeline.
-  5. **Resolution Flow**: Pre-filled drawer submitting incident data to institutional memory.
 
 ---
 

@@ -114,8 +114,9 @@ export const HypothesisCard: React.FC<HypothesisCardProps> = ({
 
   return (
     <Card
+      id={`hypothesis-${hypothesis.id}`}
       className={clsx(
-        'transition-all duration-150',
+        'transition-all duration-150 scroll-mt-32',
         isHero
           ? 'border-border-strong ring-1 ring-border-strong/50 shadow-md'
           : 'border-border'

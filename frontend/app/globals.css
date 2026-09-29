@@ -94,3 +94,21 @@ textarea:focus-visible,
     background: #FFFFFF !important;
   }
 }
+
+/* Demo view mode shortcut (toggled via 'd' key) */
+body[data-demo="true"] {
+  font-size: 16px;
+}
+
+body[data-demo="true"] h1 {
+  font-size: 1.75rem;
+}
+
+body[data-demo="true"] .rounded-card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+/* Scroll margin for sticky headers (128px) */
+.scroll-mt-header {
+  scroll-margin-top: 128px;
+}

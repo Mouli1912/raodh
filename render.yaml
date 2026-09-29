@@ -1,0 +1,35 @@
+services:
+  # Next.js Frontend Web UI
+  - type: web
+    name: precedent-web
+    env: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_USE_MOCK
+        value: "false"
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: precedent-api
+          property: host
+
+  # FastAPI Agent Backend
+  - type: web
+    name: precedent-api
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: HINDSIGHT_BASE_URL
+        value: https://api.hindsight.vectorize.io
+      - key: HINDSIGHT_API_KEY
+        sync: false
+      - key: LLM_PRIMARY
+        value: llama-3.3-70b-versatile
+      - key: LLM_FALLBACK
+        value: llama-3.1-8b-instant
