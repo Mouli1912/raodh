@@ -1,39 +1,19 @@
 version: '3.8'
 
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://precedent:precedent@postgres:5432/precedent_db
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - postgres
-      - redis
-
-  frontend:
-    build: ./frontend
+  precedent-web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_USE_MOCK: "true"
+        NEXT_PUBLIC_API_URL: ""
+    container_name: precedent_app
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
-
-  postgres:
-    image: postgres:15-alpine
     environment:
-      POSTGRES_USER: precedent
-      POSTGRES_PASSWORD: precedent
-      POSTGRES_DB: precedent_db
-    ports:
-      - "5432:5432"
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
-  shop-api:
-    build: ./target-app/shop-api
-    ports:
-      - "8080:8080"
+      - NODE_ENV=production
+      - PORT=3000
+      - NEXT_PUBLIC_USE_MOCK=true
+      - NEXT_PUBLIC_API_URL=
+    restart: unless-stopped
